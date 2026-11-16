@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "instruction-failure-checklist",
+  "version": "1.0.0",
+  "description": "A seven-point checklist for auditing agent instructions and tool contracts."
+}

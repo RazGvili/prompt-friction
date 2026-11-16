@@ -1,0 +1,20 @@
+{
+  "name": "instruction-checklists",
+  "interface": {
+    "displayName": "Instruction Checklists"
+  },
+  "plugins": [
+    {
+      "name": "instruction-failure-checklist",
+      "source": {
+        "source": "local",
+        "path": "./plugins/instruction-failure-checklist"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
