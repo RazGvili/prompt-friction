@@ -1,5 +1,5 @@
 ---
-name: instruction-failure-checklist
+name: prompt-friction
 description: A short checklist for auditing agent instructions and tool contracts.
 ---
 

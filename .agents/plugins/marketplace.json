@@ -1,14 +1,14 @@
 {
-  "name": "instruction-checklists",
+  "name": "prompt-friction",
   "interface": {
-    "displayName": "Instruction Checklists"
+    "displayName": "Prompt Friction"
   },
   "plugins": [
     {
-      "name": "instruction-failure-checklist",
+      "name": "prompt-friction",
       "source": {
         "source": "local",
-        "path": "./plugins/instruction-failure-checklist"
+        "path": "./plugins/prompt-friction"
       },
       "policy": {
         "installation": "AVAILABLE",

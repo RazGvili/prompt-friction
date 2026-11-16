@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "prompt-friction",
+  "version": "1.0.0",
+  "description": "A seven-point checklist for auditing agent instructions and tool contracts.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Prompt Friction",
+        "shortDescription": "Spot conflicts in agent instructions"
+      }
+    }
+  }
+}
