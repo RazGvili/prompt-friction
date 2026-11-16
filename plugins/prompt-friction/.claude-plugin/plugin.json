@@ -1,0 +1,8 @@
+{
+  "name": "prompt-friction",
+  "version": "1.1.0",
+  "description": "Audit agent instructions and tool contracts with source quotes, concrete requests, and controls.",
+  "author": {
+    "name": "Raz Gvili"
+  }
+}

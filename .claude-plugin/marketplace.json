@@ -1,0 +1,16 @@
+{
+  "name": "prompt-friction",
+  "owner": {
+    "name": "Raz Gvili"
+  },
+  "metadata": {
+    "description": "Prompt Friction for reviewing agent instructions and tool contracts."
+  },
+  "plugins": [
+    {
+      "name": "prompt-friction",
+      "source": "./plugins/prompt-friction",
+      "description": "Audit agent instructions and tool contracts with source quotes, concrete requests, and controls."
+    }
+  ]
+}

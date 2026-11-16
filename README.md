@@ -1,6 +1,6 @@
 # Prompt Friction
 
-A Codex plugin with seven things to look for when reviewing how an agent is instructed to behave. It covers duplicate rules, conflicting requirements, priority, tool contracts, impossible ordering, mode changes, and false alarms.
+Prompt Friction audits agent prompts and tool contracts. It follows the instructions each model actually receives and shows how they apply to a concrete request, with source quotes and a control case for each finding.
 
 ## Install in Codex
 
@@ -9,4 +9,13 @@ codex plugin marketplace add RazGvili/prompt-friction
 codex plugin add prompt-friction@prompt-friction
 ```
 
-Ask Codex to use the **Prompt Friction** to review the agent in your project. You can also [read the checklist directly](plugins/prompt-friction/skills/prompt-friction/SKILL.md).
+## Install in Claude Code
+
+```sh
+claude plugin marketplace add RazGvili/prompt-friction
+claude plugin install prompt-friction@prompt-friction
+```
+
+Start a session in the project you want to audit. Ask “Use Prompt Friction to audit the refund agent. Can it still check for approval after resuming a long conversation?” In Claude Code, you can invoke the skill with `/prompt-friction:prompt-friction`.
+
+For another Agent Skills host, copy the [`prompt-friction` skill directory](plugins/prompt-friction/skills/prompt-friction) into that host's skill directory. [Read the skill](plugins/prompt-friction/skills/prompt-friction/SKILL.md).
