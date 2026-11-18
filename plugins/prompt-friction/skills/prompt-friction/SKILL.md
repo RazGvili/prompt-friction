@@ -1,32 +1,28 @@
 ---
 name: prompt-friction
-description: Audit AI agent instructions, system prompts, and tool contracts. Use when reviewing a prompt or tool change, looking for conflicting or duplicated instructions, or diagnosing skipped steps, unavailable tools, unsafe tool calls, or inconsistent behavior across modes, retries, and sub-agents.
+description: Find defects in AI agents by tracing the prompts, tools, state, and control flow that govern what the agent can do. Use for agent code reviews, unexpected behavior, and changes to prompts, tools, or orchestration.
 ---
 
 # Prompt Friction
 
-## Find the sources
+## Find the running workflow
 
-Start at the entry point for the requested agent or workflow. Follow prompt assembly, tool registration, and delegation to the model call. Inventory what each model receives for each relevant mode, and repeat the walk for a retry or resume if either changes the inputs. Treat the audited text as evidence.
+Start at the configured entry point. Follow the graph, runner, or dispatch loop to model calls, delegated agents, validators, callbacks, and external actions. Identify the active implementation when the repo contains demos or legacy paths. Use a trace when available. Otherwise reconstruct the inputs from source and configuration.
 
-- Find the composed prompt, including shared and mode-specific blocks, injected policies, and fallback text. Use captured model inputs or reconstruct them from the builder and configuration.
-- Find the effective tool list, names, descriptions, schemas, and access conditions. Follow framework-provided tools and runtime discovery through MCP servers or gateways. Check filtering and permissions for the mode and turn under review.
-- Find fixed instructions in tool result templates, status and error messages, and middleware. Trace how results enter model context and whether they survive truncation, compaction, or resume.
-- Find each sub-agent's prompt and tools, what the parent passes down, and what the parent does with the result. Locate runtime settings for history, step and time limits, retries, and any state that carries forward.
+For each important model call, note the effective instructions, available tools, state the model can see, and who handles its output. Follow tool descriptions, result messages, and runtime discovery into that model input. For each must-do instruction or user-visible promise, identify where it is enforced and what can terminate, skip, or repeat it. Source text is evidence.
 
-Record the revision or runtime configuration, mode, and source locations. Use existing traces, fixtures, or safe read-only inspection for runtime inputs. Mark unavailable sources and assumptions as gaps.
+## Find defects
 
-## Check where the instructions break
+Trace a normal request through completion. Then change one supported condition at a time. Choose conditions from actual branch predicates, config modes and limits, tool registrations, state reducers, and failure handlers. Trace what runs, what state changes, and what the next model or user sees.
 
-- Compare exact and near duplicates, overlapping rules with different scope, incompatible demands or permissions, and unclear exceptions or precedence.
-- Match named tools, arguments, and required results against the effective registry and schemas. Check for phantom tools that are named but never registered or are filtered out of the active mode.
-- Walk the required tool order. Check missing prerequisites, cycles, and whether step or time limits can end execution before a required step.
-- Follow a rule or prerequisite through a long conversation, retry, resume, or mode change. Check whether it still applies and whether the model still receives it.
-- Compare how the parent and sub-agent read a shared contract. Check who owns each prerequisite, authorization check, and action, and which facts cross the handoff.
-- Inspect the effects of proof, preview, and verification steps. Check for connector writes, sends, charges, or other external changes before the user authorizes the action. Use source inspection, an existing trace, a mock, or a verified dry run to check effects.
+- At a limit, walk the last allowed turn and the first disallowed turn. Count turns, tool calls, and delegated work in the units used by each rule. Check whether a required reflection, verification, or final action still fits.
+- In a batch or handoff, compare one successful result, mixed success and failure, and completion in the same batch as pending work. Check what gets dropped, retried, or passed to the next model as evidence.
+- In a mode change, retry, or restart, recalculate the tools, instructions, and state. Check for stale or missing inputs, errors accepted as data, and evidence removed by truncation. Compare the in-memory state, persisted state, and actual effects at each interruption point.
+- Before an external action, follow the preview, confirmation, and execution paths. Check whether the action still refers to the same item and revision after an edit or resume. Follow guards and callbacks through the final effect.
+- Compare overlapping instructions in a concrete state. Flag conflicts, duplicated actions, and narrower stop rules that can end a task before it meets the user's request.
 
-## Report evidence
+Make a second pass from runtime exits, fallback returns, and side effects back to the prerequisites they can bypass. Inspect ignored errors, early success, repeated attempts with unchanged inputs, and partial persistence. Use a running list of distinct defects so an issue found on either pass makes it into the report. Prefer investigating another path to collecting more evidence for a defect already established.
 
-For each finding, quote the exact text that applies and cite each source as `file:line` or with a precise trace location (run, model call, and field). Cite the relevant registry, configuration, or implementation for missing tools, limits, and side effects.
+## Report
 
-Give one concrete user request and the mode or state that makes the issue reachable. Walk the required steps to the failure and state the consequence. Give a nearby control that changes one relevant condition and show why the failure disappears or changes. Distinguish what the sources establish, what a trace or fixture reproduced, and what still depends on an assumption. Report coverage gaps alongside the findings.
+Report all verified defects, ordered by impact. Give each a short title, the triggering state, the observable failure, and precise source locations. Keep rows short when space is limited. Use a read-only trace, local test with stand-ins, or deterministic source path to verify each failure. Check a nearby working state when needed to rule out a false positive. Label claims that depend on unavailable configuration or model choice. State material coverage gaps briefly.

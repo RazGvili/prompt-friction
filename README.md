@@ -1,6 +1,6 @@
 # Prompt Friction
 
-Prompt Friction audits agent prompts and tool contracts. It follows the instructions each model actually receives and shows how they apply to a concrete request, with source quotes and a control case for each finding.
+Prompt Friction finds defects across agent prompts, tools, and runtime control flow. It traces a normal request, checks what happens when one condition changes, and cites the code behind each finding. See the [project-level eval](evals/2026-11-18-project-reviews/README.md) for the tested projects and results.
 
 ## Install in Codex
 
