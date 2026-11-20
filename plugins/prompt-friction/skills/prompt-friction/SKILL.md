@@ -17,11 +17,13 @@ For each important model call, find the instructions, tools, and state the model
 
 Trace a normal request until it ends. Then change one condition at a time. Pick conditions from branches, modes, limits, tool registrations, state updates, and error handlers. For each case, check which code runs. Check what state changes. Check what the next model call or the user sees.
 
+- **Overlapping rules.** Look for exact or near duplicates, including the same rule with a different scope. Compare rules that apply to the same request. Look for conflicting requirements or permissions. For each exception or override, check when it applies and which rule wins. Check whether overlapping rules repeat an action or end the task too soon.
+- **Tool contracts.** Match the tool names in the instructions to the tools available in that mode. Check whether a filter removes a tool the agent needs. Check whether the tool accepts the arguments the instructions require and returns the data the agent expects.
+- **Step order.** Walk the required steps in order. Check that each step can get what it needs. Look for cycles where steps wait for each other.
 - **Limits.** Trace the last turn that the limit allows. Trace what happens when the agent tries the next turn. Count turns, tool calls, and work sent to sub-agents. Use the unit that each rule names. Check whether each required reflection, verification, or final action fits within the limit.
-- **Batches and handoffs.** Compare a case with one successful result and a case with both a success and a failure. Also check what happens when one item signals completion while work in the same batch is still pending. Check what the code drops, retries, or gives to the next model call as evidence.
+- **Batches and handoffs.** Compare a case with one successful result and a case with both a success and a failure. Also check what happens when one item signals completion while work in the same batch is still pending. Check what the code drops, retries, or gives to the next model call as evidence. At each handoff, check which agent must do each required step, check approval, and take the action. Check that the receiving agent gets the facts it needs.
 - **Mode changes, retries, and restarts.** Find the instructions, tools, and state again after the change. Check for stale or missing inputs. Check whether the code uses an error as data. Check whether truncation removes evidence. At each interruption, compare state in memory, saved state, and actions that already happened.
 - **External actions.** Follow the preview, confirmation, and execution. After an edit or a resume, check that the action uses the same item and revision. Follow the checks and callbacks until the action takes effect.
-- **Overlapping instructions.** Compare instructions that apply in the same case. Look for conflicts and repeated actions. Check whether a stop rule can end the task before the agent meets the user's request.
 
 ## Check early stops and actions
 
@@ -31,6 +33,6 @@ Keep one list of distinct defects from both passes. Once you have enough evidenc
 
 ## Report what you verified
 
-Report all verified defects in order of impact. Give each defect a short title. Say when it occurs and what goes wrong. Cite the exact source locations. Keep rows short if space is limited.
+Report all verified defects in order of impact. Give each defect a short title. Give one example user request and the mode or state that triggers the defect. Say what goes wrong. Cite the exact source locations. Keep rows short if space is limited.
 
 Verify each defect with a read-only trace, a local test with stand-ins, or a code path that proves the result. If needed, check a nearby case that works. Label findings that depend on configuration or a model choice you cannot check. Briefly state any gaps that matter.
