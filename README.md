@@ -1,6 +1,6 @@
 # Prompt Friction
 
-Prompt Friction finds defects across agent prompts, tools, and runtime control flow. It traces a normal request, checks what happens when one condition changes, and cites the code behind each finding. See the [project-level eval](evals/2026-11-18-project-reviews/README.md) for the tested projects and results.
+Prompt Friction reviews AI agent prompts, tool contracts, and runtime behavior. It traces a request through the code, checks how failures, limits, and restarts change what happens, and cites the source behind each finding.
 
 ## Install in Codex
 
@@ -16,6 +16,14 @@ claude plugin marketplace add RazGvili/prompt-friction
 claude plugin install prompt-friction@prompt-friction
 ```
 
-Start a session in the project you want to audit. Ask “Use Prompt Friction to audit the refund agent. Can it still check for approval after resuming a long conversation?” In Claude Code, you can invoke the skill with `/prompt-friction:prompt-friction`.
+## Use the skill
 
-For another Agent Skills host, copy the [`prompt-friction` skill directory](plugins/prompt-friction/skills/prompt-friction) into that host's skill directory. [Read the skill](plugins/prompt-friction/skills/prompt-friction/SKILL.md).
+Start a new session in the project you want to review, with access to the agent's code and configuration. Ask “Use Prompt Friction to audit the refund agent. Can it still check for approval after a restart?”
+
+In Codex, type `$` and select `prompt-friction` in the skill picker. In Claude Code, use `/prompt-friction:prompt-friction`.
+
+Each verified finding gives the triggering state, the observable failure, and source locations.
+
+## Evaluation
+
+In one paired Codex review per project on three snapshots used during development, the released skill text found 18 of 19 predefined defects. Plain review found 12. [Results and method](evals/README.md)
