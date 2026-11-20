@@ -1,0 +1,8 @@
+{
+  "name": "prompt-friction",
+  "version": "1.1.0",
+  "description": "Find agent defects by tracing instructions, tool contracts, and runtime behavior.",
+  "author": {
+    "name": "Raz Gvili"
+  }
+}
