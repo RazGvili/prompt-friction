@@ -5,24 +5,34 @@ description: Find defects in AI agents by tracing the prompts, tools, state, and
 
 # Prompt Friction
 
-## Find the running workflow
+Find defects by checking what the agent is told to do and what it can do.
 
-Start at the configured entry point. Follow the graph, runner, or dispatch loop to model calls, delegated agents, validators, callbacks, and external actions. Identify the active implementation when the repo contains demos or legacy paths. Use a trace when available. Otherwise reconstruct the inputs from source and configuration.
+## Find the code that runs
 
-For each important model call, note the effective instructions, available tools, state the model can see, and who handles its output. Follow tool descriptions, result messages, and runtime discovery into that model input. For each must-do instruction or user-visible promise, identify where it is enforced and what can terminate, skip, or repeat it. Source text is evidence.
+Start at the entry point that the configuration selects. If the project has demos or old code, find the code that runs. Follow the workflow to model calls, sub-agents, validators, callbacks, and external actions. Use a trace if one is available. Otherwise, use the source code and configuration to find the inputs.
 
-## Find defects
+For each important model call, find the instructions, tools, and state the model receives. Find which code handles the reply. Check how tool descriptions, tool results, and tools found at run time reach the model. For each requirement or promise to the user, find the code that enforces it. Check what can stop, skip, or repeat the required step. Use source text as evidence.
 
-Trace a normal request through completion. Then change one supported condition at a time. Choose conditions from actual branch predicates, config modes and limits, tool registrations, state reducers, and failure handlers. Trace what runs, what state changes, and what the next model or user sees.
+## Check what happens
 
-- At a limit, walk the last allowed turn and the first disallowed turn. Count turns, tool calls, and delegated work in the units used by each rule. Check whether a required reflection, verification, or final action still fits.
-- In a batch or handoff, compare one successful result, mixed success and failure, and completion in the same batch as pending work. Check what gets dropped, retried, or passed to the next model as evidence.
-- In a mode change, retry, or restart, recalculate the tools, instructions, and state. Check for stale or missing inputs, errors accepted as data, and evidence removed by truncation. Compare the in-memory state, persisted state, and actual effects at each interruption point.
-- Before an external action, follow the preview, confirmation, and execution paths. Check whether the action still refers to the same item and revision after an edit or resume. Follow guards and callbacks through the final effect.
-- Compare overlapping instructions in a concrete state. Flag conflicts, duplicated actions, and narrower stop rules that can end a task before it meets the user's request.
+Trace a normal request until it ends. Then change one condition at a time. Pick conditions from branches, modes, limits, tool registrations, state updates, and error handlers. For each case, check which code runs. Check what state changes. Check what the next model call or the user sees.
 
-Make a second pass from runtime exits, fallback returns, and side effects back to the prerequisites they can bypass. Inspect ignored errors, early success, repeated attempts with unchanged inputs, and partial persistence. Use a running list of distinct defects so an issue found on either pass makes it into the report. Prefer investigating another path to collecting more evidence for a defect already established.
+- **Overlapping rules.** Look for exact or near duplicates, including the same rule with a different scope. Compare rules that apply to the same request. Look for conflicting requirements or permissions. For each exception or override, check when it applies and which rule wins. Check whether overlapping rules repeat an action or end the task too soon.
+- **Tool contracts.** Match the tool names in the instructions to the tools available in that mode. Check whether a filter removes a tool the agent needs. Check whether the tool accepts the arguments the instructions require and returns the data the agent expects.
+- **Step order.** Walk the required steps in order. Check that each step can get what it needs. Look for cycles where steps wait for each other.
+- **Limits.** Trace the last turn that the limit allows. Trace what happens when the agent tries the next turn. Count turns, tool calls, and work sent to sub-agents. Use the unit that each rule names. Check whether each required reflection, verification, or final action fits within the limit.
+- **Batches and handoffs.** Compare a case with one successful result and a case with both a success and a failure. Also check what happens when one item signals completion while work in the same batch is still pending. Check what the code drops, retries, or gives to the next model call as evidence. At each handoff, check which agent must do each required step, check approval, and take the action. Check that the receiving agent gets the facts it needs.
+- **Mode changes, retries, and restarts.** Find the instructions, tools, and state again after the change. Check for stale or missing inputs. Check whether the code uses an error as data. Check whether truncation removes evidence. At each interruption, compare state in memory, saved state, and actions that already happened.
+- **External actions.** Follow the preview, confirmation, and execution. After an edit or a resume, check that the action uses the same item and revision. Follow the checks and callbacks until the action takes effect.
 
-## Report
+## Check early stops and actions
 
-Report all verified defects, ordered by impact. Give each a short title, the triggering state, the observable failure, and precise source locations. Keep rows short when space is limited. Use a read-only trace, local test with stand-ins, or deterministic source path to verify each failure. Check a nearby working state when needed to rule out a false positive. Label claims that depend on unavailable configuration or model choice. State material coverage gaps briefly.
+Find the places where the agent can stop, return a fallback, or take an external action. For each path, check what must happen first. Check whether the path can skip that step. Look for ignored errors, early success, retries with the same inputs, and state that is only partly saved.
+
+Keep one list of distinct defects from both passes. Once you have enough evidence for a finding, move to another path.
+
+## Report what you verified
+
+Report all verified defects in order of impact. Give each defect a short title. Give one example user request and the mode or state that triggers the defect. Say what goes wrong. Cite the exact source locations. Keep rows short if space is limited.
+
+Verify each defect with a read-only trace, a local test with stand-ins, or a code path that proves the result. If needed, check a nearby case that works. Label findings that depend on configuration or a model choice you cannot check. Briefly state any gaps that matter.
