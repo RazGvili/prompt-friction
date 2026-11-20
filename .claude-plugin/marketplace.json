@@ -4,7 +4,7 @@
     "name": "Raz Gvili"
   },
   "metadata": {
-    "description": "Prompt Friction for reviewing agent instructions and tool contracts."
+    "description": "Find agent defects by tracing instructions, tool contracts, and runtime behavior."
   },
   "plugins": [
     {
