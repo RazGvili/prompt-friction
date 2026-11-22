@@ -1,23 +1,42 @@
 # Prompt Friction evaluation
 
-The Prompt Friction skill text shipped in v1.1.0 and v1.1.1 identified **18 of 19 predefined defects** across three project snapshots. Plain review identified **12 of 19** in the paired comparison.
+## Atlas synthetic agent · v1.1.1
 
-| Project | Plain review | Prompt Friction v1.1.0 |
-| --- | ---: | ---: |
-| Open Deep Research | 5/9 | 8/9 |
-| Google ADK small-business loan agent | 5/6 | 6/6 |
-| Magentic-UI OmniAgent | 2/4 | 4/4 |
-| **Total** | **12/19** | **18/19** |
+Atlas is a conference operations agent with 200 instructions, 30 tool contracts, three modes, 16 planted defects, and nine working controls. The comparison used the [v1.1.1 skill text](https://github.com/RazGvili/prompt-friction/blob/b8b40c2af91e1bef1d12e7e0564769b40ae89b7f/plugins/prompt-friction/skills/prompt-friction/SKILL.md).
 
-## Method and scope
+| Codex model | Plain review | With Prompt Friction | Mean change |
+| --- | ---: | ---: | ---: |
+| GPT-6.2 Sol | 12/16, 14/16 | 15/16, 14/16 | +9.4 percentage points |
+| GPT-6.1 Terra | 9/16, 8/16 | 9/16, 8/16 | 0.0 percentage points |
 
-Each project had one plain and one skill-assisted review in fresh Codex sessions. Both reviewers started at the same project root, saw the same file set and request, received no defect hints, and had a 900-word reporting cap. Only the skill-assisted reviewer received the Prompt Friction instructions. The LangChain and Google ADK request was “Can you look through this project and tell me what could go wrong with the agent?” The Magentic-UI request was “Can you look through this project and tell me what could go wrong when the agent stops and continues?”
+Eight fresh Codex sessions got the same project files and review request. The skill sessions also received Prompt Friction. Two graders independently scored the reports against a frozen rubric with model and condition labels removed. A third resolved four disputed labels. No report flagged any of the nine working controls as broken.
 
-The checklist was fixed before the scored reviews. A hit required the final report to identify the failure and a reachable mechanism supported by source or a local mock. Each distinct mechanism counted once. The score measures coverage of the listed defects. It leaves precision and additional findings unscored.
+With the skill, Terra found one more missing-tool defect and one fewer handoff conflict across its two runs. Both repeats used the same synthetic project, so the numbers describe Atlas. The Atlas fixture and full review reports are unpublished.
 
-The same three projects informed skill development, so the scores describe this suite. Reviewers used source inspection and local mocks. Live agent behavior and production deployments fall outside the test. The published record contains the inputs and scores. Exact model settings and raw reports are unavailable in the repository. [Full evaluation record and spot checks](https://github.com/RazGvili/prompt-friction/blob/5d5e677e05807bf717425ddbfb308259530fd18b/evals/2026-11-18-project-reviews/README.md)
+### Follow-up checks
 
-## Results by defect
+An extra instruction to work through concrete cases tied v1.1.1 on the predefined criteria in two versions of a synthetic dashboard fixture and on Open Deep Research. In a separate comparison, a change aimed at checking actual tool outputs improved Atlas from 28/32 to 30/32 across two runs, while Open Deep Research fell from 15/18 to 14/18. We kept the v1.1.1 checklist.
+
+## Three-project development benchmark · v1.1.0
+
+The v1.1.0 skill found **18 of 19 predefined defects** across three pinned project snapshots. The plain review in the same round found **12 of 19**. The first plain round found **14 of 19**.
+
+| Project | Plain, round 1 | PR #1 skill | First revision | Plain, round 2 | Prompt Friction v1.1.0 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Open Deep Research | 6/9 | 5/9 | 7/9 | 5/9 | 8/9 |
+| Google ADK small-business loan agent | 5/6 | 5/6 | 6/6 | 5/6 | 6/6 |
+| Magentic-UI OmniAgent | 3/4 | 2/4 | 2/4 | 2/4 | 4/4 |
+| **Total** | **14/19** | **12/19** | **15/19** | **12/19** | **18/19** |
+
+### Method and scope
+
+The first round compared plain review, the PR #1 skill, and a first revision. The second round compared a fresh plain review with the revision shipped in v1.1.0. Each condition used one fresh Codex session per project. Reviewers started at the same project root, saw the same files and request, received no defect hints, and had a 900-word reporting cap. Only the skill-assisted conditions received skill instructions. The LangChain and Google ADK request was “Can you look through this project and tell me what could go wrong with the agent?” The Magentic-UI request was “Can you look through this project and tell me what could go wrong when the agent stops and continues?”
+
+The list of predefined defects was fixed before the scored reviews. A hit required the final report to identify the failure and a reachable mechanism supported by source or a local mock. Each distinct mechanism counted once. The score measures coverage of the listed defects. It leaves precision and additional findings unscored.
+
+The first round on all three projects informed v1.1.0, so its scores describe performance on this development suite. Reviewers used source inspection and local mocks. Live agent behavior and production deployments fall outside the test. The published record contains the inputs and scores. Exact model settings and raw reports are unavailable in the repository. [Full evaluation record and spot checks](https://github.com/RazGvili/prompt-friction/blob/5d5e677e05807bf717425ddbfb308259530fd18b/evals/2026-11-18-project-reviews/README.md)
+
+### Second-round results by defect
 
 | Predefined defect | Plain review | Prompt Friction v1.1.0 |
 | --- | --- | --- |
@@ -41,7 +60,7 @@ The same three projects informed skill development, so the scores describe this 
 | OmniAgent. Oversized write leaves a stale checkpoint for restart | Missed | Found |
 | OmniAgent. Bare text fallback can report completion without evidence | Missed | Found |
 
-## Inputs
+### Inputs
 
 Copy only the files listed in [the checksum manifest](inputs.sha256). Use the following paths under a common directory.
 
