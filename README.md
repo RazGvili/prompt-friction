@@ -2,6 +2,12 @@
 
 Prompt Friction reviews AI agent prompts, tool contracts, and runtime behavior. It traces a request through the code, checks how failures, limits, and restarts change what happens, and cites the source behind each finding.
 
+## Examples
+
+- **Book now or wait?** A room opens up. One rule says “Book the first available room immediately.” Another says “Wait for the organizer’s approval before booking.”
+- **The required tool is missing.** The agent must check the speaker roster before proposing a move. Its `list_speakers` tool is unavailable in planning mode.
+- **Both steps are waiting.** The speaker notice must link to the published schedule. The schedule can go live only after the notice has been sent.
+
 ## Install in Codex
 
 ```sh
