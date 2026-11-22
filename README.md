@@ -4,63 +4,39 @@ Prompt Friction reviews AI agent prompts, tool contracts, and runtime behavior. 
 
 ## Examples
 
-Shortened excerpts from a synthetic conference agent.
-
-### The prompt and tool disagree on what comes first
-
-`system.md:154`
+### Book now or wait?
 
 ```text
-Call get_audience for the current audience rules before drafting a notice.
+# system.md
+If a room is free, book it immediately.
+Wait for the organizer's approval before booking.
 ```
 
-`tools.json:2469`
+A free room with no approval triggers both rules.
 
-```json
-{
-  "name": "get_audience",
-  "description": "For staff notices, preview the proposed body before calling this tool."
-}
-```
-
-For a fresh staff notice, each step requires the other to happen first.
-
-### The prompt requires a tool that is unavailable
-
-`system.md:83`
+### Room name or room ID?
 
 ```text
-Use list_speakers to check who is affected before proposing a schedule change.
+# system.md
+To book the studio, call book_room(room_name="Studio").
+
+# tools/book_room.py
+def book_room(room_id: str): ...
 ```
 
-`tools.json:1498`
+A call with `room_name` fails before a room is booked.
 
-```json
-{
-  "name": "list_speakers",
-  "modes": ["ACT", "RECOVERY"]
-}
+### Where did the tool go?
+
+```text
+# system.md
+In PLAN, call list_speakers to check the roster.
+
+# tools.json
+{"name": "list_speakers", "modes": ["ACT"]}
 ```
 
-Ask for a planning-only schedule proposal. The agent starts in `PLAN`, where it cannot call `list_speakers`.
-
-### The tool returns a value outside its schema
-
-`tools.json:572` · `list_room_slots` output schema
-
-```json
-{
-  "status": { "enum": ["available", "held", "booked"] }
-}
-```
-
-`atlas.py:274` · `confirm_room` handler
-
-```python
-hold.update(status="confirmed", booking_id=booking_id)
-```
-
-Read the slot after confirming the room. `list_room_slots` returns `confirmed`, which is outside the declared enum.
+The agent cannot finish the roster check in `PLAN`.
 
 ## Install in Codex
 
