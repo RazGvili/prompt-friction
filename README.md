@@ -9,7 +9,12 @@ Prompt Friction reviews AI agent prompts, tool contracts, and runtime behavior. 
 ```text
 # system.md
 If a room is free, book it immediately.
-Wait for the organizer's approval before booking.
+
+# tools/book_room.json
+{
+  "name": "book_room",
+  "description": "Wait for the organizer's approval before booking."
+}
 ```
 
 A free room with no approval triggers both rules.
