@@ -4,9 +4,63 @@ Prompt Friction reviews AI agent prompts, tool contracts, and runtime behavior. 
 
 ## Examples
 
-- **Book now or wait?** A room opens up. One rule says “Book the first available room immediately.” Another says “Wait for the organizer’s approval before booking.”
-- **The required tool is missing.** The agent must check the speaker roster before proposing a move. Its `list_speakers` tool is unavailable in planning mode.
-- **Both steps are waiting.** The speaker notice must link to the published schedule. The schedule can go live only after the notice has been sent.
+Shortened excerpts from a synthetic conference agent.
+
+### The prompt and tool disagree on what comes first
+
+`system.md:154`
+
+```text
+Call get_audience for the current audience rules before drafting a notice.
+```
+
+`tools.json:2469`
+
+```json
+{
+  "name": "get_audience",
+  "description": "For staff notices, preview the proposed body before calling this tool."
+}
+```
+
+For a fresh staff notice, each step requires the other to happen first.
+
+### The prompt requires a tool that is unavailable
+
+`system.md:83`
+
+```text
+Use list_speakers to check who is affected before proposing a schedule change.
+```
+
+`tools.json:1498`
+
+```json
+{
+  "name": "list_speakers",
+  "modes": ["ACT", "RECOVERY"]
+}
+```
+
+Ask for a planning-only schedule proposal. The agent starts in `PLAN`, where it cannot call `list_speakers`.
+
+### The tool returns a value outside its schema
+
+`tools.json:572` · `list_room_slots` output schema
+
+```json
+{
+  "status": { "enum": ["available", "held", "booked"] }
+}
+```
+
+`atlas.py:274` · `confirm_room` handler
+
+```python
+hold.update(status="confirmed", booking_id=booking_id)
+```
+
+Read the slot after confirming the room. `list_room_slots` returns `confirmed`, which is outside the declared enum.
 
 ## Install in Codex
 
