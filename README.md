@@ -67,4 +67,4 @@ Each verified finding gives the triggering state, the observable failure, and so
 
 ## Evaluation
 
-In one paired Codex review per project on three snapshots used during development, the released skill text found 18 of 19 predefined defects. Plain review found 12. [Results and method](evals/README.md)
+On Atlas, a synthetic conference agent with 16 planted defects, GPT-6.2 Sol averaged **14.5/16** with Prompt Friction v1.1.1 and **13/16** with plain review. GPT-6.1 Terra averaged **8.5/16** in both conditions. Each model ran two fresh reviews per condition. [Results and method](evals/README.md)
